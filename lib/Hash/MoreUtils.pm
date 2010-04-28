@@ -2,13 +2,14 @@ package Hash::MoreUtils;
 
 use strict;
 use warnings;
+use vars qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS $VERSION);
 use Scalar::Util qw(blessed);
 
 require Exporter;
 
-our @ISA = qw(Exporter);
+@ISA = qw(Exporter);
 
-our %EXPORT_TAGS = (
+%EXPORT_TAGS = (
     all => [
         qw(slice slice_def slice_exists slice_grep
           hashsort
@@ -16,9 +17,9 @@ our %EXPORT_TAGS = (
     ],
 );
 
-our @EXPORT_OK = ( @{ $EXPORT_TAGS{all} } );
+@EXPORT_OK = ( @{ $EXPORT_TAGS{all} } );
 
-our $VERSION = '0.02';
+$VERSION = '0.02';
 
 =head1 NAME
 
@@ -69,25 +70,29 @@ sub slice_grep (&@);
 
 sub slice
 {
-    return slice_grep { 1 } @_;
-}
-
-sub slice_def
-{
-    return slice_grep
+    my ( $href, @list ) = @_;
+    if( @list )
     {
-        defined $_{$_};
+	return map { $_ => $href->{$_} } @list;
     }
-    @_;
+    %{$href};
 }
 
 sub slice_exists
 {
-    return slice_grep
+    my ( $href, @list ) = @_;
+    if( @list )
     {
-        exists $_{$_};
+	return map { $_ => $href->{$_} } grep {exists( $href->{$_} ) } @list;
     }
-    @_;
+    %{$href};
+}
+
+sub slice_def
+{
+    my ( $href, @list ) = @_;
+    @list = keys %{$href} unless @list;
+    return map { $_ => $href->{$_} } grep { defined( $href->{$_} ) } @list;
 }
 
 sub slice_grep (&@)
