@@ -16,7 +16,7 @@ our %EXPORT_TAGS = (
 
 our @EXPORT_OK = (@{ $EXPORT_TAGS{all} });
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 NAME
 
@@ -33,22 +33,24 @@ Hash::MoreUtils - Provide the stuff missing in Hash::Util
 Similar to C<< List::MoreUtils >>, C<< Hash::MoreUtils >>
 contains trivial but commonly-used functionality for hashes.
 
-=head3 C<slice> HASHREF, LIST
+=head1 FUNCTIONS
+
+=head2 C<slice> HASHREF, LIST
 
 Returns a hash containing the (key, value) pair for every
 key in LIST.
 
-=head3 C<slice_def> HASHREF, LIST
+=head2 C<slice_def> HASHREF, LIST
 
 As C<slice>, but only includes keys whose values are
 defined.
 
-=head3 C<slice_exists> HASHREF, LIST
+=head2 C<slice_exists> HASHREF, LIST
 
 As C<slice> but only includes keys which exist in the
 hashref.
 
-=head3 C<slice_grep> BLOCK HASHREF, LIST
+=head2 C<slice_grep> BLOCK HASHREF, LIST
 
 As C<slice>, with an arbitrary condition.
 
@@ -89,7 +91,7 @@ sub slice_grep (&@) {
   } grep { $code->($_) } @keys;
 }
 
-=head3 C<< hashsort >>
+=head2 C<< hashsort >>
 
   my @array_of_pairs  = hashsort \%hash;
   my @pairs_by_length = hashsort sub { length($a) <=> length($b) }, \%hash;
@@ -130,14 +132,46 @@ L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Hash-MoreUtils>.
 I will be notified, and then you'll automatically be notified of progress on
 your bug as I make changes.
 
+=head1 SUPPORT
+
+You can find documentation for this module with the perldoc command.
+
+    perldoc Hash::MoreUtils
+
+You can also look for information at:
+
+=over 4
+
+=item * RT: CPAN's request tracker
+
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Hash-MoreUtils>
+
+=item * AnnoCPAN: Annotated CPAN documentation
+
+L<http://annocpan.org/dist/Hash-MoreUtils>
+
+=item * CPAN Ratings
+
+L<http://cpanratings.perl.org/d/Hash-MoreUtils>
+
+=item * Search CPAN
+
+L<http://search.cpan.org/dist/Hash-MoreUtils/>
+
+=back
+
 =head1 ACKNOWLEDGEMENTS
 
 =head1 COPYRIGHT & LICENSE
 
 Copyright 2005 Hans Dieter Pearcey, all rights reserved.
+Copyright 2010 Jens Rehsack
 
 This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.
+
+See http://dev.perl.org/licenses/ for more information.
 
 =cut
 

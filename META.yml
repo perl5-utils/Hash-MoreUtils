@@ -1,11 +1,21 @@
-# http://module-build.sourceforge.net/META-spec.html
-#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
-name:         Hash-MoreUtils
-version:      0.01
-version_from: lib/Hash/MoreUtils.pm
-installdirs:  site
-requires:
-    Test::More:                    0
-
-distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.30
+---
+abstract: 'Provide the stuff missing in Hash::Util'
+author:
+  - 'Hans Dieter Pearcey <hdp@cpan.org>'
+build_requires:
+  Test::More: 0
+configure_requires:
+  Module::Build: 0.36
+generated_by: 'Module::Build version 0.3603'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Hash-MoreUtils
+provides:
+  Hash::MoreUtils:
+    file: lib/Hash/MoreUtils.pm
+    version: 0.02
+resources:
+  license: http://dev.perl.org/licenses/
+version: 0.02
