@@ -23,6 +23,12 @@ is_deeply(
 );
 
 is_deeply(
+  { slice(\%h) },
+  { a => 1, b => 2, c => undef },
+  "slice with default keys",
+);
+
+is_deeply(
   { slice_def(\%h, qw(a c d)) },
   { a => 1 },
   "slice_def undef + nonexistent",
@@ -35,6 +41,12 @@ is_deeply(
   "slice_exists nonexistent",
 );
 ok(!exists $h{d}, "slice_exists didn't autovivify d");
+
+is_deeply(
+  { slice_exists(\%h) },
+  { a => 1, b => 2, c => undef },
+  "slice_exists with default keys",
+);
 
 is_deeply(
   { slice_def \%h },
