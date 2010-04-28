@@ -7,7 +7,7 @@ MANIFEST.SKIP
 META.yml			Module meta-data (added by MakeMaker)
 README
 t/00-load.t
-t/hash.t
+t/01-hash.t
 t/manifest.t
 t/pod-coverage.t
 t/pod.t

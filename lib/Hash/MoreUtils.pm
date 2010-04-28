@@ -9,12 +9,14 @@ require Exporter;
 our @ISA = qw(Exporter);
 
 our %EXPORT_TAGS = (
-  all => [ qw(slice slice_def slice_exists slice_grep
-              hashsort
-            ) ],
+    all => [
+        qw(slice slice_def slice_exists slice_grep
+          hashsort
+          )
+    ],
 );
 
-our @EXPORT_OK = (@{ $EXPORT_TAGS{all} });
+our @EXPORT_OK = ( @{ $EXPORT_TAGS{all} } );
 
 our $VERSION = '0.02';
 
@@ -65,30 +67,36 @@ scope.
 
 sub slice_grep (&@);
 
-sub slice {
-  return slice_grep { 1 } @_;
+sub slice
+{
+    return slice_grep { 1 } @_;
 }
 
-sub slice_def {
-  return slice_grep {
-    defined $_{$_}
-  } @_;
+sub slice_def
+{
+    return slice_grep
+    {
+        defined $_{$_};
+    }
+    @_;
 }
 
-sub slice_exists {
-  return slice_grep {
-    exists $_{$_}
-  } @_;
+sub slice_exists
+{
+    return slice_grep
+    {
+        exists $_{$_};
+    }
+    @_;
 }
 
-sub slice_grep (&@) {
-  my ($code, $hash, @keys) = @_;
-  local %_ = %{$hash};
-  @keys = keys %_ unless @keys;
-  no warnings 'uninitialized';
-  return map {
-    ($_ => $_{$_})
-  } grep { $code->($_) } @keys;
+sub slice_grep (&@)
+{
+    my ( $code, $hash, @keys ) = @_;
+    local %_ = %{$hash};
+    @keys = keys %_ unless @keys;
+    no warnings 'uninitialized';
+    return map { ( $_ => $_{$_} ) } grep { $code->($_) } @keys;
 }
 
 =head2 C<< hashsort >>
@@ -105,17 +113,15 @@ some way it could be more so, please let me know.
 
 =cut
 
-sub hashsort {
-  my ($code, $hash) = @_;
-  unless ($hash) {
-    $hash = $code;
-    $code = sub { $a cmp $b };
-  }
-  return map {
-    ($_ => $hash->{$_})
-  } sort {
-    $code->()
-  } keys %$hash;
+sub hashsort
+{
+    my ( $code, $hash ) = @_;
+    unless ($hash)
+    {
+        $hash = $code;
+        $code = sub { $a cmp $b };
+    }
+    return map { ( $_ => $hash->{$_} ) } sort { $code->() } keys %$hash;
 }
 
 1;
@@ -175,4 +181,4 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-1; # End of Hash::MoreUtils
+1;    # End of Hash::MoreUtils
