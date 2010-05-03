@@ -19,7 +19,7 @@ require Exporter;
 
 @EXPORT_OK = ( @{ $EXPORT_TAGS{all} } );
 
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 =head1 NAME
 
@@ -43,19 +43,27 @@ contains trivial but commonly-used functionality for hashes.
 Returns a hash containing the (key, value) pair for every
 key in LIST.
 
+If no C<< LIST >> is given, all keys are assumed as C<< LIST >>.
+
 =head2 C<slice_def> HASHREF[, LIST]
 
 As C<slice>, but only includes keys whose values are
 defined.
+
+If no C<< LIST >> is given, all keys are assumed as C<< LIST >>.
 
 =head2 C<slice_exists> HASHREF[, LIST]
 
 As C<slice> but only includes keys which exist in the
 hashref.
 
+If no C<< LIST >> is given, all keys are assumed as C<< LIST >>.
+
 =head2 C<slice_grep> BLOCK, HASHREF[, LIST]
 
 As C<slice>, with an arbitrary condition.
+
+If no C<< LIST >> is given, all keys are assumed as C<< LIST >>.
 
 Unlike C<grep>, the condition is not given aliases to
 elements of anything.  Instead, C<< %_ >> is set to the
@@ -65,8 +73,6 @@ auto-vivifying when checking keys or values.  Also,
 scope.
 
 =cut
-
-sub slice_grep (&@);
 
 sub slice
 {
