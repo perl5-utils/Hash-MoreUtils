@@ -1,5 +1,9 @@
 Revision history for Hash-MoreUtils
 
+0.03
+	- Add documentation about intended behaviour of slice* when no
+	  list given
+
 0.02	2010-04-28
 	- Taking maintainership (Jens Rehsack)
 	- Implement optimized versions for slice, slice_exists and
