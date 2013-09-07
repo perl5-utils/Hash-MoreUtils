@@ -1,4 +1,5 @@
 \B\.svn\b
+\B\.git\b
 \.[Bb][Aa][Kk]$
 \.orig$
 \.rej$
@@ -10,8 +11,11 @@ Makefile$
 \bblib\b
 pm_to_blib
 .*\.csv
-^MYMETA.yml$
+MANIFEST.SKIP
+MYMETA.*
 ^_build/.*
 ^Build$
 ^Build\.bat$
 ^Hash-MoreUtils-.*
+\.gitignore
+\bxt\b/
