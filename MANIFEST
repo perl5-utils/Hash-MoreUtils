@@ -1,7 +1,6 @@
 Build.PL
 Changes
 lib/Hash/MoreUtils.pm
-Makefile.PL
 MANIFEST
 META.json
 META.yml
