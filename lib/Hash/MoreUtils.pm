@@ -250,7 +250,7 @@ L<http://search.cpan.org/dist/Hash-MoreUtils/>
 =head1 COPYRIGHT & LICENSE
 
 Copyright 2005 Hans Dieter Pearcey, all rights reserved.
-Copyright 2010 Jens Rehsack
+Copyright 2010-2013 Jens Rehsack
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
