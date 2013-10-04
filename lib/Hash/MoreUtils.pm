@@ -11,9 +11,9 @@ require Exporter;
 
 %EXPORT_TAGS = (
     all => [
-        qw(slice slice_def slice_exists slice_grep
-           hashsort safe_reverse
-          )
+        qw(slice slice_def slice_exists slice_grep),
+        qw(slice_map slice_def_map slice_exists_map slice_grep_map),
+        qw(hashsort safe_reverse)
     ],
 );
 
@@ -43,27 +43,27 @@ contains trivial but commonly-used functionality for hashes.
 Returns a hash containing the (key, value) pair for every
 key in LIST.
 
-If no C<< LIST >> is given, all keys are assumed as C<< LIST >>.
+If no C<LIST> is given, all keys are assumed as C<LIST>.
 
 =head2 C<slice_def> HASHREF[, LIST]
 
 As C<slice>, but only includes keys whose values are
 defined.
 
-If no C<< LIST >> is given, all keys are assumed as C<< LIST >>.
+If no C<LIST> is given, all keys are assumed as C<LIST>.
 
 =head2 C<slice_exists> HASHREF[, LIST]
 
 As C<slice> but only includes keys which exist in the
 hashref.
 
-If no C<< LIST >> is given, all keys are assumed as C<< LIST >>.
+If no C<LIST> is given, all keys are assumed as C<LIST>.
 
 =head2 C<slice_grep> BLOCK, HASHREF[, LIST]
 
 As C<slice>, with an arbitrary condition.
 
-If no C<< LIST >> is given, all keys are assumed as C<< LIST >>.
+If no C<LIST> is given, all keys are assumed as C<LIST>.
 
 Unlike C<grep>, the condition is not given aliases to
 elements of anything.  Instead, C<< %_ >> is set to the
@@ -77,37 +77,97 @@ scope.
 sub slice
 {
     my ( $href, @list ) = @_;
-    if( @list )
-    {
-	return map { $_ => $href->{$_} } @list;
-    }
+    @list and return map { $_ => $href->{$_} } @list;
     %{$href};
 }
 
 sub slice_exists
 {
     my ( $href, @list ) = @_;
-    if( @list )
-    {
-	return map { $_ => $href->{$_} } grep {exists( $href->{$_} ) } @list;
-    }
-    %{$href};
+    @list or @list = keys %{$href};
+    return map { $_ => $href->{$_} } grep {exists( $href->{$_} ) } @list;
 }
 
 sub slice_def
 {
     my ( $href, @list ) = @_;
-    @list = keys %{$href} unless @list;
+    @list or @list = keys %{$href};
     return map { $_ => $href->{$_} } grep { defined( $href->{$_} ) } @list;
 }
 
 sub slice_grep (&@)
 {
-    my ( $code, $hash, @keys ) = @_;
-    local %_ = %{$hash};
-    @keys = keys %_ unless @keys;
+    my ( $code, $href, @list ) = @_;
+    local %_ = %{$href};
+    @list or @list = keys %{$href};
     no warnings 'uninitialized';
-    return map { ( $_ => $_{$_} ) } grep { $code->($_) } @keys;
+    return map { ( $_ => $_{$_} ) } grep { $code->($_) } @list;
+}
+
+=head2 C<slice_map> HASHREF[, MAP]
+
+Returns a hash containing the (key, value) pair for every
+key in C<MAP>.
+
+If no C<MAP> is given, all keys of C<HASHREF> are assumed mapped to theirself.
+
+=head2 C<slice_def_map> HASHREF[, MAP]
+
+As C<slice_map>, but only includes keys whose values are
+defined.
+
+If no C<MAP> is given, all keys of C<HASHREF> are assumed mapped to theirself.
+
+=head2 C<slice_exists_map> HASHREF[, MAP]
+
+As C<slice_map> but only includes keys which exist in the
+hashref.
+
+If no C<MAP> is given, all keys of C<HASHREF> are assumed mapped to theirself.
+
+=head2 C<slice_grep_map> BLOCK, HASHREF[, MAP]
+
+As C<slice_map>, with an arbitrary condition.
+
+If no C<MAP> is given, all keys of C<HASHREF> are assumed mapped to theirself.
+
+Unlike C<grep>, the condition is not given aliases to
+elements of anything.  Instead, C<< %_ >> is set to the
+contents of the hashref, to avoid accidentally
+auto-vivifying when checking keys or values.  Also,
+'uninitialized' warnings are turned off in the enclosing
+scope.
+
+=cut
+
+sub slice_map
+{
+    my ( $href, %map ) = @_;
+    %map and return map { $map{$_} => $href->{$_} } keys %map;
+    %{$href};
+}
+
+sub slice_exists_map
+{
+    my ( $href, %map ) = @_;
+    %map or return slice_exists($href);
+    return map { $map{$_} => $href->{$_} } grep {exists( $href->{$_} ) } keys %map;
+}
+
+sub slice_def_map
+{
+    my ( $href, %map ) = @_;
+    %map or return slice_def($href);
+    return map { $map{$_} => $href->{$_} } grep { defined( $href->{$_} ) } keys %map;
+}
+
+sub slice_grep_map (&@)
+{
+    my ( $code, $href, %map ) = @_;
+    %map or return goto &slice_grep;
+    local %_ = %{$href};
+    no warnings 'uninitialized';
+    return map { ( $map{$_} => $_{$_} ) } grep { $code->($_) } keys %map;
 }
 
 =head2 C<hashsort> [BLOCK,] HASHREF
@@ -206,7 +266,7 @@ sub safe_reverse
 
 =head1 AUTHOR
 
-Hans Dieter Pearcey, C<< <hdp@cpan.org> >>
+Hans Dieter Pearcey, C<< <hdp@cpan.org> >>,
 Jens Rehsack, C<< <rehsack@cpan.org> >>
 
 =head1 BUGS
