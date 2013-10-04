@@ -19,7 +19,7 @@ require Exporter;
 
 @EXPORT_OK = ( @{ $EXPORT_TAGS{all} } );
 
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 =head1 NAME
 
