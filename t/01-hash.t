@@ -135,6 +135,18 @@ is_deeply(
   "hashsort with default function",
 );
 
+is_deeply(
+  [ hashsort sub { $a cmp $b }, \%h ],
+  [ 'a', 1, 'b', 2, 'c', undef ],
+  "hashsort with sort block",
+);
+
+is_deeply(
+  [ hashsort sub { $b cmp $a }, \%h ],
+  [ 'c', undef, 'b', 2, 'a', 1 ],
+  "hashsort with sort block (reverse)",
+);
+
 my %he = slice_def(\%h);
 is_deeply( 
   { safe_reverse(\%he), },

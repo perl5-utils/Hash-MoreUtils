@@ -187,12 +187,23 @@ some way it could be more so, please let me know.
 sub hashsort
 {
     my ( $code, $hash ) = @_;
-    unless ($hash)
+    my $cmp;
+    if ( $hash )
+    {
+        my $package = caller;
+        $cmp = sub {
+          no strict 'refs';
+          local ${$package.'::a'} = $a;
+          local ${$package.'::b'} = $b;
+          $code->();
+        };
+    }
+    else
     {
         $hash = $code;
-        $code = sub { $a cmp $b };
+        $cmp = sub { $a cmp $b };
     }
-    return map { ( $_ => $hash->{$_} ) } sort { $code->() } keys %$hash;
+    return map { ( $_ => $hash->{$_} ) } sort { $cmp->() } keys %$hash;
 }
 
 =head2 C<safe_reverse> [BLOCK,] HASHREF
