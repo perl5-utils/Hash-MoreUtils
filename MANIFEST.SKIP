@@ -19,3 +19,4 @@ MYMETA.*
 ^Hash-MoreUtils-.*
 \.gitignore
 \bxt\b/
+nytprof.*
