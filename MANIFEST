@@ -1,7 +1,8 @@
-Build.PL
 Changes
 lib/Hash/MoreUtils.pm
+Makefile.PL
 MANIFEST
+MANIFEST.SKIP
 META.json
 META.yml
 README
