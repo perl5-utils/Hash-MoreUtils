@@ -16,7 +16,7 @@ require Exporter;
     ],
 );
 
-@EXPORT_OK = ( @{ $EXPORT_TAGS{all} } );
+@EXPORT_OK = (@{$EXPORT_TAGS{all}});
 
 $VERSION = '0.06';
 
@@ -75,32 +75,32 @@ scope.
 
 sub slice
 {
-    my ( $href, @list ) = @_;
+    my ($href, @list) = @_;
     @list and return map { $_ => $href->{$_} } @list;
     %{$href};
 }
 
 sub slice_exists
 {
-    my ( $href, @list ) = @_;
+    my ($href, @list) = @_;
     @list or @list = keys %{$href};
-    return map { $_ => $href->{$_} } grep {exists( $href->{$_} ) } @list;
+    return map { $_ => $href->{$_} } grep { exists($href->{$_}) } @list;
 }
 
 sub slice_def
 {
-    my ( $href, @list ) = @_;
+    my ($href, @list) = @_;
     @list or @list = keys %{$href};
-    return map { $_ => $href->{$_} } grep { defined( $href->{$_} ) } @list;
+    return map { $_ => $href->{$_} } grep { defined($href->{$_}) } @list;
 }
 
 sub slice_grep (&@)
 {
-    my ( $code, $href, @list ) = @_;
+    my ($code, $href, @list) = @_;
     local %_ = %{$href};
     @list or @list = keys %{$href};
     no warnings 'uninitialized';
-    return map { ( $_ => $_{$_} ) } grep { $code->($_) } @list;
+    return map { ($_ => $_{$_}) } grep { $code->($_) } @list;
 }
 
 =head2 C<slice_map> HASHREF[, MAP]
@@ -141,32 +141,32 @@ scope.
 
 sub slice_map
 {
-    my ( $href, %map ) = @_;
+    my ($href, %map) = @_;
     %map and return map { $map{$_} => $href->{$_} } keys %map;
     %{$href};
 }
 
 sub slice_exists_map
 {
-    my ( $href, %map ) = @_;
+    my ($href, %map) = @_;
     %map or return slice_exists($href);
-    return map { $map{$_} => $href->{$_} } grep {exists( $href->{$_} ) } keys %map;
+    return map { $map{$_} => $href->{$_} } grep { exists($href->{$_}) } keys %map;
 }
 
 sub slice_def_map
 {
-    my ( $href, %map ) = @_;
+    my ($href, %map) = @_;
     %map or return slice_def($href);
-    return map { $map{$_} => $href->{$_} } grep { defined( $href->{$_} ) } keys %map;
+    return map { $map{$_} => $href->{$_} } grep { defined($href->{$_}) } keys %map;
 }
 
 sub slice_grep_map (&@)
 {
-    my ( $code, $href, %map ) = @_;
+    my ($code, $href, %map) = @_;
     %map or return goto &slice_grep;
     local %_ = %{$href};
     no warnings 'uninitialized';
-    return map { ( $map{$_} => $_{$_} ) } grep { $code->($_) } keys %map;
+    return map { ($map{$_} => $_{$_}) } grep { $code->($_) } keys %map;
 }
 
 =head2 C<hashsort> [BLOCK,] HASHREF
@@ -185,16 +185,16 @@ some way it could be more so, please let me know.
 
 sub hashsort
 {
-    my ( $code, $hash ) = @_;
+    my ($code, $hash) = @_;
     my $cmp;
-    if ( $hash )
+    if ($hash)
     {
         my $package = caller;
         $cmp = sub {
-          no strict 'refs';
-          local ${$package.'::a'} = $a;
-          local ${$package.'::b'} = $b;
-          $code->();
+            no strict 'refs';
+            local ${$package . '::a'} = $a;
+            local ${$package . '::b'} = $b;
+            $code->();
         };
     }
     else
@@ -202,7 +202,7 @@ sub hashsort
         $hash = $code;
         $cmp = sub { $a cmp $b };
     }
-    return map { ( $_ => $hash->{$_} ) } sort { $cmp->() } keys %$hash;
+    return map { ($_ => $hash->{$_}) } sort { $cmp->() } keys %$hash;
 }
 
 =head2 C<safe_reverse> [BLOCK,] HASHREF
@@ -252,22 +252,22 @@ for the resulting hash.
 
 sub safe_reverse
 {
-    my ( $code, $hash ) = @_;
+    my ($code, $hash) = @_;
     unless ($hash)
     {
         $hash = $code;
         $code = sub {
-	      my ($k, $v, $r) = @_;
-	      return exists( $r->{$v} )
-		     ? ( ref($r->{$v}) ? [ @{$r->{$v}}, $k ] : [ $r->{$v}, $k ] )
-		     : $k;
-	};
+            my ($k, $v, $r) = @_;
+            return exists($r->{$v})
+              ? (ref($r->{$v}) ? [@{$r->{$v}}, $k] : [$r->{$v}, $k])
+              : $k;
+        };
     }
 
     my %reverse;
-    while( my ( $key, $val ) = each %{$hash} )
+    while (my ($key, $val) = each %{$hash})
     {
-	$reverse{$val} = &{$code}( $key, $val, \%reverse );
+        $reverse{$val} = &{$code}($key, $val, \%reverse);
     }
     return %reverse;
 }
