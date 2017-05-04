@@ -3,7 +3,6 @@ package Hash::MoreUtils;
 use strict;
 use warnings;
 use vars qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS $VERSION);
-use Scalar::Util qw(blessed);
 
 require Exporter;
 
