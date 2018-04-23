@@ -22,7 +22,7 @@ WriteMakefile1(
         resources   => {
             homepage   => 'https://metacpan.org/release/Hash-MoreUtils',
             repository => {
-                url  => 'https://github.com:perl5-utils/Hash-MoreUtils.git',
+                url  => 'https://github.com/perl5-utils/Hash-MoreUtils.git',
                 web  => 'https://github.com/perl5-utils/Hash-MoreUtils',
                 type => 'git',
             },
