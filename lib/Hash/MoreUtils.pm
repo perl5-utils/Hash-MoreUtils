@@ -108,27 +108,27 @@ use warnings;
 Returns a hash containing the (key, value) pair for every
 key in C<MAP>.
 
-If no C<MAP> is given, all keys of C<HASHREF> are assumed mapped to theirself.
+If no C<MAP> is given, all keys of C<HASHREF> are assumed mapped to themselves.
 
 =head2 C<slice_def_map> HASHREF[, MAP]
 
 As C<slice_map>, but only includes keys whose values are
 defined.
 
-If no C<MAP> is given, all keys of C<HASHREF> are assumed mapped to theirself.
+If no C<MAP> is given, all keys of C<HASHREF> are assumed mapped to themselves.
 
 =head2 C<slice_exists_map> HASHREF[, MAP]
 
 As C<slice_map> but only includes keys which exist in the
 hashref.
 
-If no C<MAP> is given, all keys of C<HASHREF> are assumed mapped to theirself.
+If no C<MAP> is given, all keys of C<HASHREF> are assumed mapped to themselves.
 
 =head2 C<slice_grep_map> BLOCK, HASHREF[, MAP]
 
 As C<slice_map>, with an arbitrary condition.
 
-If no C<MAP> is given, all keys of C<HASHREF> are assumed mapped to theirself.
+If no C<MAP> is given, all keys of C<HASHREF> are assumed mapped to themselves.
 
 Unlike C<grep>, the condition is not given aliases to
 elements of anything.  Instead, C<< %_ >> is set to the
