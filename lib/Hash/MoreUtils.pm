@@ -2,11 +2,8 @@ package Hash::MoreUtils;
 
 use strict;
 use warnings;
-use vars qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS $VERSION);
-
-require Exporter;
-
-@ISA = qw(Exporter);
+use vars qw(@EXPORT_OK %EXPORT_TAGS $VERSION);
+use base 'Exporter';
 
 %EXPORT_TAGS = (
     all => [
@@ -77,7 +74,7 @@ sub slice
 {
     my ($href, @list) = @_;
     @list and return map { $_ => $href->{$_} } @list;
-    %{$href};
+    return %{$href};
 }
 
 sub slice_exists
@@ -94,14 +91,17 @@ sub slice_def
     return map { $_ => $href->{$_} } grep { defined($href->{$_}) } @list;
 }
 
+## no critic (Subroutines::ProhibitSubroutinePrototypes)
 sub slice_grep (&@)
 {
     my ($code, $href, @list) = @_;
     local %_ = %{$href};
     @list or @list = keys %{$href};
-    no warnings 'uninitialized';
+    no warnings 'uninitialized';    ## no critic (TestingAndDebugging::ProhibitNoWarnings)
     return map { ($_ => $_{$_}) } grep { $code->($_) } @list;
 }
+
+use warnings;
 
 =head2 C<slice_map> HASHREF[, MAP]
 
@@ -143,7 +143,7 @@ sub slice_map
 {
     my ($href, %map) = @_;
     %map and return map { $map{$_} => $href->{$_} } keys %map;
-    %{$href};
+    return %{$href};
 }
 
 sub slice_exists_map
@@ -165,9 +165,11 @@ sub slice_grep_map (&@)
     my ($code, $href, %map) = @_;
     %map or return goto &slice_grep;
     local %_ = %{$href};
-    no warnings 'uninitialized';
+    no warnings 'uninitialized';    ## no critic (TestingAndDebugging::ProhibitNoWarnings)
     return map { ($map{$_} => $_{$_}) } grep { $code->($_) } keys %map;
 }
+
+use warnings;
 
 =head2 C<hashsort> [BLOCK,] HASHREF
 
@@ -190,12 +192,13 @@ sub hashsort
     if ($hash)
     {
         my $package = caller;
+        no strict 'refs';    ## no critic (TestingAndDebugging::ProhibitNoStrict)
         $cmp = sub {
-            no strict 'refs';
             local ${$package . '::a'} = $a;
             local ${$package . '::b'} = $b;
             $code->();
         };
+        use strict;
     }
     else
     {
