@@ -74,6 +74,14 @@ is_deeply(
     "slice_grep on keys",
 );
 
+my %sgtest = (
+    a => undef,
+    b => 0,
+    c => 5
+);
+my @sgtest = keys %sgtest;
+is_deeply({slice_grep { $_ eq 'b' } \%sgtest, @sgtest}, {b => 0}, "slice_grep over given array",);
+
 is_deeply({slice_grep { $_{$_} && $_{$_} > 1 } \%h}, {b => 2}, "slice_grep on values",);
 
 # slice_map and friends
@@ -186,11 +194,13 @@ is_deeply(
             a => "A",
             b => "B",
             c => "C"
-        )
+        ),
     },
     {B => 2},
     "slice_grep_map on values",
 );
+
+is_deeply({slice_grep_map { $_{$_} && $_{$_} > 1 } \%h}, {b => 2}, "slice_grep_map use slice_grep",);
 
 # hashsort and safe_reverse
 
