@@ -218,7 +218,7 @@ sub hashsort
         croak "Cannot safe reverse: $v would be mapped to both $k and $r->{$v}";
       $v;
   };
-  my %easy_rev = save_reverse \&croak_dup, \%hash
+  my %easy_rev = safe_reverse \&croak_dup, \%hash
 
 Returns safely reversed hash (value, key pairs of original hash). If no
 C<< BLOCK >> is given, following routine will be used:
