@@ -227,4 +227,29 @@ is_deeply(
 my %hec = safe_reverse(\%he);
 is_deeply([keys %hec, sort @{$hec{1}}], [1, qw(a b)], "safe revert with duplicate values and default function",);
 
+%he = (
+    a => 1,
+    b => 1,
+    c => 1
+);
+%hec = safe_reverse(\%he);
+is_deeply([keys %hec, sort @{$hec{1}}], [1, qw(a b c)], "safe revert with all keys have the same value and default function");
+
+%he  = slice_def(\%h);
+%hec = safe_reverse(
+    sub {
+        my ($k, $v, $r) = @_;
+        exists $r->{$v} ? $r->{$v} : $k;
+    },
+    \%he
+);
+is_deeply(
+    \%hec,
+    {
+        2 => 'b',
+        1 => 'a'
+    },
+    "safe revert with unique values and LEFT_PRECEDENCE behavior emulating function"
+);
+
 done_testing;
