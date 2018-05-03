@@ -188,24 +188,21 @@ some way it could be more so, please let me know.
 sub hashsort
 {
     my ($code, $hash) = @_;
-    my $cmp;
-    if ($hash)
+    $hash or return map { ($_ => $hash->{$_}) } sort { $a cmp $b } keys %{$hash = $code};
+
+    # Localise $a, $b
+    my ($caller_a, $caller_b) = do
     {
-        my $package = caller;
-        no strict 'refs';    ## no critic (TestingAndDebugging::ProhibitNoStrict)
-        $cmp = sub {
-            local ${$package . '::a'} = $a;
-            local ${$package . '::b'} = $b;
-            $code->();
-        };
-        use strict;
-    }
-    else
-    {
-        $hash = $code;
-        $cmp = sub { $a cmp $b };
-    }
-    return map { ($_ => $hash->{$_}) } sort { $cmp->() } keys %$hash;
+        my $pkg = caller();
+        ## no critic (TestingAndDebugging::ProhibitNoStrict)
+        no strict 'refs';
+        (\*{$pkg . '::a'}, \*{$pkg . '::b'});
+    };
+
+    ## no critic (Variables::RequireInitializationForLocalVars)
+    local (*$caller_a, *$caller_b);
+    ## no critic (BuiltinFunctions::RequireSimpleSortBlock)
+    return map { ($_ => $hash->{$_}) } sort { (*$caller_a, *$caller_b) = (\$a, \$b); $code->(); } keys %$hash;
 }
 
 =head2 C<safe_reverse> [BLOCK,] HASHREF
