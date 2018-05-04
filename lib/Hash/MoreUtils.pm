@@ -7,7 +7,7 @@ use base 'Exporter';
 
 %EXPORT_TAGS = (
     all => [
-        qw(slice slice_def slice_exists slice_grep),
+        qw(slice slice_def slice_exists slice_missing slice_grep),
         qw(slice_map slice_def_map slice_exists_map slice_grep_map),
         qw(hashsort safe_reverse)
     ],
@@ -90,6 +90,8 @@ sub slice_def
     @list or @list = keys %{$href};
     return map { $_ => $href->{$_} } grep { defined($href->{$_}) } @list;
 }
+
+sub slice_missing { }
 
 ## no critic (Subroutines::ProhibitSubroutinePrototypes)
 sub slice_grep (&@)

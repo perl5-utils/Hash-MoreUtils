@@ -56,6 +56,10 @@ is_deeply(
     "slice_exists with default keys",
 );
 
+is_deeply({slice_missing(\%h, qw(a c d))}, {d => undef}, "slice_missing to nonexistent",);
+
+is_deeply({slice_missing(\%h)}, {}, "slice_missing with default list",);
+
 is_deeply(
     {slice_def \%h},
     {
