@@ -7,8 +7,8 @@ use base 'Exporter';
 
 %EXPORT_TAGS = (
     all => [
-        qw(slice slice_def slice_exists slice_missing slice_grep),
-        qw(slice_map slice_def_map slice_missing_map slice_exists_map slice_grep_map),
+        qw(slice slice_def slice_exists slice_missing slice_notdef slice_grep),
+        qw(slice_map slice_def_map slice_missing_map slice_notdef_map slice_exists_map slice_grep_map),
         qw(hashsort safe_reverse)
     ],
 );
@@ -63,6 +63,18 @@ C<LIST> element (as key) that does not exist hashref.
 If no C<LIST> is given there are obviously no non-existent
 keys in C<HASHREF> so the returned HASH is empty.
 
+=head2 C<slice_notdef> HASHREF[, LIST]
+
+Searches for undefined slices with the given C<LIST>
+elements as keys in the given C<HASHREF>.
+Returns a C<HASHREF> containing the slices (key -> undef)
+for every undefined item.
+
+To search for undefined slices C<slice_notdef> needs a
+C<LIST> with items to search for (as keys). If no C<LIST>
+is given it returns an empty C<HASHREF> even when the given
+C<HASHREF> contains undefined slices.
+
 =head2 C<slice_grep> BLOCK, HASHREF[, LIST]
 
 As C<slice>, with an arbitrary condition.
@@ -106,6 +118,13 @@ sub slice_missing
     return map { $_ => undef } grep { !exists($href->{$_}) } @list;
 }
 
+sub slice_notdef
+{
+    my ($href, @list) = @_;
+    @list or return ();
+    return map { $_ => undef } grep { !defined($href->{$_}) } @list;
+}
+
 ## no critic (Subroutines::ProhibitSubroutinePrototypes)
 sub slice_grep (&@)
 {
@@ -146,6 +165,12 @@ The slices of the returned C<HASHREF> are always undefined.
 
 If no C<MAP> is given, C<slice_missing> will be used on C<HASHREF> which will return an empty HASH.
 
+=head2 C<slice_notdef_map> HASHREF[, MAP]
+
+As C<slice_notdef> but checks for undefined keys (of C<MAP>) and map to the value (of C<MAP>) as key in the returned HASH.
+
+If no C<MAP> is given, C<slice_notdef> will be used on C<HASHREF> which will return an empty HASH.
+
 =head2 C<slice_grep_map> BLOCK, HASHREF[, MAP]
 
 As C<slice_map>, with an arbitrary condition.
@@ -180,6 +205,13 @@ sub slice_missing_map
     my ($href, %map) = @_;
     %map or return slice_missing($href);
     return map { $map{$_} => undef } grep { !exists($href->{$_}) } keys %map;
+}
+
+sub slice_notdef_map
+{
+    my ($href, %map) = @_;
+    %map or return slice_notdef($href);
+    return map { $map{$_} => $href->{$_} } grep { !defined($href->{$_}) } keys %map;
 }
 
 sub slice_def_map
