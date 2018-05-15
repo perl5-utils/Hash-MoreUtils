@@ -186,6 +186,30 @@ is_deeply(
 );
 
 is_deeply(
+    {
+        slice_missing_map(
+            \%h,
+            (
+                a => "A",
+                b => "B",
+                f => "F"
+            )
+        )
+    },
+    {F => undef},
+    "slice_missing_map with given map",
+);
+
+is_deeply({slice_missing_map(\%h)}, {}, "slice_missing_map using slice_missing",);
+
+is_deeply({slice_missing_map(\%h, ())}, {}, "slice_missing_map with empty map",);
+
+my %t = ();
+is_deeply({slice_missing_map(\%t)}, {}, "slice_missing_map with empty hash",);
+
+is_deeply({slice_missing_map(\%t, (a => 'b'))}, {b => undef}, "slice_missing_map with empty hash on map",);
+
+is_deeply(
     {slice_def_map \%h},
     {
         a => 1,
