@@ -8,7 +8,7 @@ use base 'Exporter';
 %EXPORT_TAGS = (
     all => [
         qw(slice slice_def slice_exists slice_missing slice_grep),
-        qw(slice_map slice_def_map slice_exists_map slice_grep_map),
+        qw(slice_map slice_def_map slice_missing_map slice_exists_map slice_grep_map),
         qw(hashsort safe_reverse)
     ],
 );
@@ -55,6 +55,14 @@ hashref.
 
 If no C<LIST> is given, all keys are assumed as C<LIST>.
 
+=head2 C<slice_missing> HASHREF[, LIST]
+
+Returns a HASH containing the (key => undef) pair for every
+C<LIST> element (as key) that does not exist hashref.
+
+If no C<LIST> is given there are obviously no non-existent
+keys in C<HASHREF> so the returned HASH is empty.
+
 =head2 C<slice_grep> BLOCK, HASHREF[, LIST]
 
 As C<slice>, with an arbitrary condition.
@@ -91,7 +99,12 @@ sub slice_def
     return map { $_ => $href->{$_} } grep { defined($href->{$_}) } @list;
 }
 
-sub slice_missing { }
+sub slice_missing
+{
+    my ($href, @list) = @_;
+    @list or return ();
+    return map { $_ => undef } grep { !exists($href->{$_}) } @list;
+}
 
 ## no critic (Subroutines::ProhibitSubroutinePrototypes)
 sub slice_grep (&@)
@@ -126,6 +139,13 @@ hashref.
 
 If no C<MAP> is given, all keys of C<HASHREF> are assumed mapped to themselves.
 
+=head2 C<slice_missing_map> HASHREF[, MAP]
+
+As C<slice_missing> but checks for missing keys (of C<MAP>) and map to the value (of C<MAP>) as key in the returned HASH.
+The slices of the returned C<HASHREF> are always undefined.
+
+If no C<MAP> is given, C<slice_missing> will be used on C<HASHREF> which will return an empty HASH.
+
 =head2 C<slice_grep_map> BLOCK, HASHREF[, MAP]
 
 As C<slice_map>, with an arbitrary condition.
@@ -153,6 +173,13 @@ sub slice_exists_map
     my ($href, %map) = @_;
     %map or return slice_exists($href);
     return map { $map{$_} => $href->{$_} } grep { exists($href->{$_}) } keys %map;
+}
+
+sub slice_missing_map
+{
+    my ($href, %map) = @_;
+    %map or return slice_missing($href);
+    return map { $map{$_} => undef } grep { !exists($href->{$_}) } keys %map;
 }
 
 sub slice_def_map
