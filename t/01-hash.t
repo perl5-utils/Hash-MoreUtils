@@ -57,6 +57,29 @@ is_deeply(
 );
 
 is_deeply(
+    {slice_without(\%h, qw(a d))},
+    {
+        b => 2,
+        c => undef
+    },
+    "slice_without did withold the right keys",
+);
+
+is_deeply(
+    {slice_without(\%h)},
+    {
+        a => 1,
+        b => 2,
+        c => undef
+    },
+    "slice_without did not withold anything with default keys",
+);
+
+my %r = slice_without(\%h, qw(b d));
+my %d = slice_without(\%h, keys %r);
+is_deeply({%d}, {b => 2}, "slice_without only witheld the (key/value) pairs from list");
+
+is_deeply(
     {slice_def \%h},
     {
         a => 1,

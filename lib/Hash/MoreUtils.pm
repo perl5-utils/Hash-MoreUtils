@@ -7,7 +7,7 @@ use base 'Exporter';
 
 %EXPORT_TAGS = (
     all => [
-        qw(slice slice_def slice_exists slice_grep),
+        qw(slice slice_def slice_exists slice_without slice_grep),
         qw(slice_map slice_def_map slice_exists_map slice_grep_map),
         qw(hashsort safe_reverse)
     ],
@@ -55,6 +55,13 @@ hashref.
 
 If no C<LIST> is given, all keys are assumed as C<LIST>.
 
+=head2 C<slice_without> HASHREF[, LIST ]
+
+As C<slice> but with any (key/value) pair whose key is
+in LIST.
+
+If no C<LIST> is given, nothing will be deleted.
+
 =head2 C<slice_grep> BLOCK, HASHREF[, LIST]
 
 As C<slice>, with an arbitrary condition.
@@ -82,6 +89,14 @@ sub slice_exists
     my ($href, @list) = @_;
     @list or @list = keys %{$href};
     return map { $_ => $href->{$_} } grep { exists($href->{$_}) } @list;
+}
+
+sub slice_without
+{
+    my ($href, @list) = @_;
+    local %_ = %{$href};
+    delete $_{$_} for @list;
+    return %_;
 }
 
 sub slice_def
