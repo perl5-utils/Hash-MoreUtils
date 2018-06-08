@@ -147,6 +147,36 @@ is_deeply(
 );
 
 is_deeply(
+    {slice_false \%H},
+    {
+        c => undef,
+        d => 0,
+        C => !!$h{c}
+    },
+    "slice_false on all keys"
+);
+
+is_deeply(
+    {slice_false \%H, keys %h},
+    {
+        c => undef,
+    },
+    "slice_false on given keys"
+);
+
+is_deeply(
+    {slice_false \%H, qw(a b c d A B C D)},
+    {
+        c => undef,
+        d => 0,
+        A => undef,
+        B => undef,
+        C => !!$h{c}
+    },
+    "slice_false on given mixed existing and not existing keys"
+);
+
+is_deeply(
     {slice_grep { $_ gt 'a' } \%h},
     {
         b => 2,
@@ -341,6 +371,58 @@ is_deeply(
         d => "0E0"
     },
     "slice_true_map on given map with mixed existing and not existing"
+);
+
+is_deeply(
+    {slice_false_map \%H},
+    {
+        c => undef,
+        d => 0,
+        C => !!$h{c}
+    },
+    "slice_false_map on implicit keys"
+);
+
+is_deeply(
+    {
+        slice_false_map \%H,
+        (
+            d => "D",
+            D => "d",
+            C => "c"
+        )
+    },
+    {
+        c => !!$h{c},
+        D => 0,
+    },
+    "slice_false_map on given map"
+);
+
+is_deeply(
+    {
+        slice_false_map \%H,
+        (
+            a => "A",
+            b => "B",
+            c => "C",
+            d => "D",
+            e => "E",
+            A => "a",
+            B => "b",
+            D => "d",
+            C => "c",
+        )
+    },
+    {
+        C => undef,
+        D => 0,
+        E => undef,
+        a => undef,
+        b => undef,
+        c => !!$h{c},
+    },
+    "slice_false_map on given map with mixed existing and not existing"
 );
 
 is_deeply(

@@ -8,9 +8,9 @@ use base 'Exporter';
 %EXPORT_TAGS = (
     all => [
         qw(slice slice_def slice_exists slice_without slice_missing),
-        qw(slice_notdef slice_true slice_grep),
+        qw(slice_notdef slice_true slice_false slice_grep),
         qw(slice_map slice_def_map slice_exists_map slice_missing_map),
-        qw(slice_notdef_map slice_true_map slice_grep_map),
+        qw(slice_notdef_map slice_true_map slice_false_map slice_grep_map),
         qw(hashsort safe_reverse)
     ],
 );
@@ -92,6 +92,13 @@ of the hash which's values evaluates to C<TRUE>.
 
 If no C<LIST> is given, all keys are assumed as C<LIST>.
 
+=head2 C<slice_false> HASHREF[, LIST]
+
+A special C<slice_grep> which returns only those elements
+of the hash which's values evaluates to C<FALSE>.
+
+If no C<LIST> is given, all keys are assumed as C<LIST>.
+
 =head2 C<slice_grep> BLOCK, HASHREF[, LIST]
 
 As C<slice>, with an arbitrary condition.
@@ -158,6 +165,13 @@ sub slice_true
     return map { $_ => $href->{$_} } grep { defined $href->{$_} and $href->{$_} } @list;
 }
 
+sub slice_false
+{
+    my ($href, @list) = @_;
+    @list or @list = keys %{$href};
+    return map { $_ => $href->{$_} } grep { not $href->{$_} } @list;
+}
+
 ## no critic (Subroutines::ProhibitSubroutinePrototypes)
 sub slice_grep (&@)
 {
@@ -208,6 +222,13 @@ If no C<MAP> is given, C<slice_notdef> will be used on C<HASHREF> which will ret
 
 As C<slice_map>, but only includes pairs whose values are
 C<TRUE>.
+
+If no C<MAP> is given, all keys of C<HASHREF> are assumed mapped to themselves.
+
+=head2 C<slice_false_map> HASHREF[, MAP]
+
+As C<slice_map>, but only includes pairs whose values are
+C<FALSE>.
 
 If no C<MAP> is given, all keys of C<HASHREF> are assumed mapped to themselves.
 
@@ -266,6 +287,13 @@ sub slice_true_map
     my ($href, %map) = @_;
     %map or return slice_true($href);
     return map { $map{$_} => $href->{$_} } grep { defined $href->{$_} and $href->{$_} } keys %map;
+}
+
+sub slice_false_map
+{
+    my ($href, %map) = @_;
+    %map or return slice_false($href);
+    return map { $map{$_} => $href->{$_} } grep { not $href->{$_} } keys %map;
 }
 
 sub slice_grep_map (&@)
