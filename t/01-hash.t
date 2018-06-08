@@ -79,6 +79,16 @@ my %r = slice_without(\%h, qw(b d));
 my %d = slice_without(\%h, keys %r);
 is_deeply({%d}, {b => 2}, "slice_without only witheld the (key/value) pairs from list");
 
+is_deeply({slice_missing(\%h, qw(a b f))}, {f => undef}, "slice_missing with given list",);
+
+is_deeply({slice_missing(\%h)}, {}, "slice_missing without list",);
+
+is_deeply({slice_missing(\%h, ())}, {}, "slice_missing with empty list",);
+
+is_deeply({slice_missing(\%e)}, {}, "slice_missing on empty hash",);
+
+is_deeply({slice_missing(\%e, qw(a))}, {a => undef}, "slice_missing on empty hash with given list",);
+
 is_deeply(
     {slice_notdef(\%h, qw(a b c d))},
     {
@@ -215,10 +225,9 @@ is_deeply({slice_missing_map(\%h)}, {}, "slice_missing_map using slice_missing",
 
 is_deeply({slice_missing_map(\%h, ())}, {}, "slice_missing_map with empty map",);
 
-my %t = ();
-is_deeply({slice_missing_map(\%t)}, {}, "slice_missing_map with empty hash",);
+is_deeply({slice_missing_map(\%e)}, {}, "slice_missing_map one empty hash",);
 
-is_deeply({slice_missing_map(\%t, (a => 'b'))}, {b => undef}, "slice_missing_map with empty hash on map",);
+is_deeply({slice_missing_map(\%e, (a => 'b'))}, {b => undef}, "slice_missing_map on empty hash with map",);
 
 is_deeply(
     {
@@ -239,9 +248,9 @@ is_deeply({slice_notdef_map(\%h)}, {}, "slice_notdef_map using slice_notdef",);
 
 is_deeply({slice_notdef_map(\%h, ())}, {}, "slice_notdef_map with empty map",);
 
-is_deeply({slice_notdef_map(\%t)}, {}, "slice_notdef_map with empty hash",);
+is_deeply({slice_notdef_map(\%e)}, {}, "slice_notdef_map on empty hash",);
 
-is_deeply({slice_notdef_map(\%t, (a => 'b'))}, {b => undef}, "slice_notdef_map with empty hash on map",);
+is_deeply({slice_notdef_map(\%e, (a => 'b'))}, {b => undef}, "slice_notdef_map on empty hash with map",);
 
 is_deeply(
     {slice_def_map \%h},
