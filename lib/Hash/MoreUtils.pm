@@ -7,8 +7,10 @@ use base 'Exporter';
 
 %EXPORT_TAGS = (
     all => [
-        qw(slice slice_def slice_exists slice_without slice_missing slice_notdef slice_grep),
-        qw(slice_map slice_def_map slice_exists_map slice_missing_map slice_notdef_map slice_grep_map),
+        qw(slice slice_def slice_exists slice_without slice_missing),
+        qw(slice_notdef slice_true slice_grep),
+        qw(slice_map slice_def_map slice_exists_map slice_missing_map),
+        qw(slice_notdef_map slice_true_map slice_grep_map),
         qw(hashsort safe_reverse)
     ],
 );
@@ -83,6 +85,13 @@ C<LIST> with items to search for (as keys). If no C<LIST>
 is given it returns an empty C<HASHREF> even when the given
 C<HASHREF> contains undefined slices.
 
+=head2 C<slice_true> HASHREF[, LIST]
+
+A special C<slice_grep> which returns only those elements
+of the hash which's values evaluates to C<TRUE>.
+
+If no C<LIST> is given, all keys are assumed as C<LIST>.
+
 =head2 C<slice_grep> BLOCK, HASHREF[, LIST]
 
 As C<slice>, with an arbitrary condition.
@@ -115,6 +124,7 @@ sub slice_exists
 sub slice_without
 {
     my ($href, @list) = @_;
+    @list or return %{$href};
     local %_ = %{$href};
     delete $_{$_} for @list;
     return %_;
@@ -139,6 +149,13 @@ sub slice_notdef
     my ($href, @list) = @_;
     @list or return ();
     return map { $_ => undef } grep { !defined($href->{$_}) } @list;
+}
+
+sub slice_true
+{
+    my ($href, @list) = @_;
+    @list or @list = keys %{$href};
+    return map { $_ => $href->{$_} } grep { defined $href->{$_} and $href->{$_} } @list;
 }
 
 ## no critic (Subroutines::ProhibitSubroutinePrototypes)
@@ -186,6 +203,13 @@ If no C<MAP> is given, C<slice_missing> will be used on C<HASHREF> which will re
 As C<slice_notdef> but checks for undefined keys (of C<MAP>) and map to the value (of C<MAP>) as key in the returned HASH.
 
 If no C<MAP> is given, C<slice_notdef> will be used on C<HASHREF> which will return an empty HASH.
+
+=head2 C<slice_true_map> HASHREF[, MAP]
+
+As C<slice_map>, but only includes pairs whose values are
+C<TRUE>.
+
+If no C<MAP> is given, all keys of C<HASHREF> are assumed mapped to themselves.
 
 =head2 C<slice_grep_map> BLOCK, HASHREF[, MAP]
 
@@ -235,6 +259,13 @@ sub slice_def_map
     my ($href, %map) = @_;
     %map or return slice_def($href);
     return map { $map{$_} => $href->{$_} } grep { defined($href->{$_}) } keys %map;
+}
+
+sub slice_true_map
+{
+    my ($href, %map) = @_;
+    %map or return slice_true($href);
+    return map { $map{$_} => $href->{$_} } grep { defined $href->{$_} and $href->{$_} } keys %map;
 }
 
 sub slice_grep_map (&@)

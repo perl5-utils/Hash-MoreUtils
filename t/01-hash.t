@@ -6,10 +6,19 @@ use warnings;
 use Test::More;
 use Hash::MoreUtils qw(:all);
 
+my %e;
 my %h = (
     a => 1,
     b => 2,
     c => undef
+);
+my %H = (
+    a => 1,
+    b => 2,
+    c => undef,
+    d => 0,
+    D => "0E0",
+    C => !!$h{c},
 );
 
 is_deeply({slice(\%h, qw(a))}, {a => 1}, "simple slice",);
@@ -107,6 +116,34 @@ is_deeply(
         b => 2
     },
     "slice_def with default keys",
+);
+
+is_deeply(
+    {slice_true \%H},
+    {
+        a => 1,
+        b => 2,
+        D => "0E0"
+    },
+    "slice_true on all keys"
+);
+
+is_deeply(
+    {slice_true \%H, keys %h},
+    {
+        a => 1,
+        b => 2,
+    },
+    "slice_true on given keys"
+);
+
+is_deeply(
+    {slice_true \%H, qw(a b c A B C)},
+    {
+        a => 1,
+        b => 2,
+    },
+    "slice_true on given mixed existing and not existing keys"
 );
 
 is_deeply(
@@ -259,6 +296,51 @@ is_deeply(
         b => 2
     },
     "slice_def_map with default keys",
+);
+
+is_deeply(
+    {slice_true_map \%H},
+    {
+        a => 1,
+        b => 2,
+        D => "0E0"
+    },
+    "slice_true_map on implicit keys"
+);
+
+is_deeply(
+    {
+        slice_true_map \%H,
+        (
+            a => "A",
+            b => "B",
+            d => "D"
+        )
+    },
+    {
+        A => 1,
+        B => 2,
+    },
+    "slice_true_map on given map"
+);
+
+is_deeply(
+    {
+        slice_true_map \%H,
+        (
+            a => "A",
+            b => "B",
+            D => "d",
+            e => "E",
+            E => "e"
+        )
+    },
+    {
+        A => 1,
+        B => 2,
+        d => "0E0"
+    },
+    "slice_true_map on given map with mixed existing and not existing"
 );
 
 is_deeply(
