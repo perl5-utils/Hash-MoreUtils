@@ -57,10 +57,11 @@ If no C<LIST> is given, all keys are assumed as C<LIST>.
 
 =head2 C<slice_without> HASHREF[, LIST ]
 
-As C<slice> but with any (key/value) pair whose key is
+As C<slice> but without any (key/value) pair whose key is
 in LIST.
 
-If no C<LIST> is given, nothing will be deleted.
+If no C<LIST> is given, in opposite to slice an empty list
+is assumed, thus nothing will be deleted.
 
 =head2 C<slice_grep> BLOCK, HASHREF[, LIST]
 
