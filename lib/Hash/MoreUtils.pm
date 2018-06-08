@@ -25,14 +25,21 @@ Hash::MoreUtils - Provide the stuff missing in Hash::Util
 
 =head1 SYNOPSIS
 
-  use Hash::MoreUtils qw(slice slice_def slice_exists slice_grep
-                         hashsort
-                        );
+  use Hash::MoreUtils qw(:all);
+  
+  my %h = (foo => "bar", FOO => "BAR", true => 1, false => 0);
+  my %s = slice \%h, qw(true false); # (true => 1, false => 0)
+  my %f = slice_false \%h; # (false => 0)
+  my %u = slice_grep { $_ =~ m/^[A-Z]/ }, \%h; # (FOO => "BAR")
+  
+  my %r = safe_reverse \%h; # (bar => "foo", BAR => "FOO", 0 => "false", 1 => "true")
 
 =head1 DESCRIPTION
 
-Similar to C<< List::MoreUtils >>, C<< Hash::MoreUtils >>
-contains trivial but commonly-used functionality for hashes.
+Similar to L<List::MoreUtils>, C<Hash::MoreUtils> contains trivial
+but commonly-used functionality for hashes. The primary focus for
+the moment is providing a common API - speeding up by XS is far
+away at the moment.
 
 =head1 FUNCTIONS
 
